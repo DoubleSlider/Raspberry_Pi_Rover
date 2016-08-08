@@ -1,0 +1,4 @@
+1. backward fuction
+2. brake function
+3. webcam
+4. ultrasonic collision avoid(should be connected to Pi directly to avoiding arduino shutdown, Pi can detected collision and reset arduino)

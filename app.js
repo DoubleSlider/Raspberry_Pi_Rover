@@ -5,9 +5,9 @@ var app = require('http').createServer(handler)
   , five = require("johnny-five"),
   board,servo,led,sensor;
 
-  // make web server listen on port 80
+  // make web server listen on port 1337
 app.listen(1337);
-board = new five.Board({port:"COM9"});
+board = new five.Board();
     
 console.log("establish control");
 
@@ -15,7 +15,7 @@ var esc;
 var speed, steer;
 // on board ready
 board.on("ready", function() {
-	// 利用前後左右控制汽車以一檔行進的方向, 用A鍵當作油門, X是剎車
+	// 利用前後左右控制汽車以一檔行進的方向, button A is for throtte, button X is for 
 	var start = Date.now();
 
 	

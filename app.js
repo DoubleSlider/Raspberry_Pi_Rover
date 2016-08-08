@@ -97,8 +97,11 @@ io.sockets.on('connection', function (socket) {
 	steer = (data.xx)*50+90; // 40~140
 	if( board.isReady){
 		servo.to(steer);
-		esc.speed(speed)
+		//esc.speed(speed)
 		console.log('speed:',speed,' steer:',steer);
+	}else{
+		speed = 50;
+		esc.speed(speed);
 	}
   });
   socket.on('A', function(data) {
@@ -115,7 +118,8 @@ io.sockets.on('connection', function (socket) {
   socket.on('X', function(data) {
 	console.log(data);
 	if( board.isReady){
-		
+		speed = 50;
+		esc.speed(speed);
 	}
   });
 });

@@ -71,7 +71,7 @@ function handler (req, res) {
 
 function calcSpeed(throtte, IsBrake){
 	//throtte = -50~50
-	speed = (IsBrake-1)*throtte*50+50;
+	speed = (IsBrake-1)*throtte+50;
 	return speed;
 }
 // on a socket connection

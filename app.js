@@ -7,15 +7,24 @@ var app = require('http').createServer(handler)
 
   // make web server listen on port 1337
 app.listen(1337);
-board = new five.Board();
+
+var SerialPort = require("serialport").SerialPort;
+board = new five.Board({
+  port: new SerialPort("COM4", {
+    baudrate: 9600,
+    buffersize: 1
+  });
     
 console.log("establish control");
+
+
+
 
 var esc;
 var speed, steer;
 // on board ready
 board.on("ready", function() {
-	// 利用前後左右控制汽車以一檔行進的方向, button A is for throtte, button X is for 
+	// 利用前後左右控制汽車以一檔行進的方向, button A is for throtte, button X is for brake
 	var start = Date.now();
 
 	
@@ -24,10 +33,10 @@ board.on("ready", function() {
 		neutral: 50,
 		pin: 9
 	});
-	//waiting for arming
- if (Date.now() - start < 2e3) {
+	//waiting for arming, is RC car require??
+ //if (Date.now() - start < 2e3) {
       //return;
-    }
+    //}
   // init a led on pin 13, strobe every 1000ms
   led = new five.Led(13).strobe(1000);
 

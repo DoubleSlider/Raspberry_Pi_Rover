@@ -8,20 +8,16 @@ var app = require('http').createServer(handler)
   // make web server listen on port 1337
 app.listen(1337);
 
-var SerialPort = require("serialport").SerialPort;
-board = new five.Board({
+//var SerialPort = require("serialport").SerialPort;
+board = new five.Board();/*{
   port: new SerialPort("COM4", {
-    baudrate: 9600,
+    baudrate: 57600,
     buffersize: 1
-  });
+  });*/
     
-console.log("establish control");
-
-
-
-
 var esc;
 var speed, steer;
+var IsBrake;
 // on board ready
 board.on("ready", function() {
 	// 利用前後左右控制汽車以一檔行進的方向, button A is for throtte, button X is for brake
@@ -73,7 +69,11 @@ function handler (req, res) {
   });
 }
 
-
+function calcSpeed(throtte, IsBrake){
+	//throtte = -50~50
+	speed = (IsBrake-1)*throtte*50+50;
+	return speed;
+}
 // on a socket connection
 io.sockets.on('connection', function (socket) {
   socket.emit('news', { hello: 'world' });
@@ -102,16 +102,10 @@ io.sockets.on('connection', function (socket) {
   // throtte and steer
   socket.on('axes', function(data) {
 	console.log('xx:',data.xx,', xy:',data.xy,', yx:',data.yx,', yy:',data.yy);
-	speed = -(data.xy-1)*50;
+	throtte = -data.xy*50; // -50~50
+	speed = calcSpeed(throtte, IsBrake);
 	steer = (data.xx)*50+90; // 40~140
-	if( board.isReady){
-		servo.to(steer);
-		//esc.speed(speed)
-		console.log('speed:',speed,' steer:',steer);
-	}else{
-		speed = 50;
-		esc.speed(speed);
-	}
+
   });
   socket.on('A', function(data) {
 	console.log(data);
@@ -125,10 +119,23 @@ io.sockets.on('connection', function (socket) {
   });
   // brake
   socket.on('X', function(data) {
-	console.log(data);
+  	IsBrake = 1;
+  	speed = 50;
+	esc.speed(speed);
+/*	console.log(data);
 	if( board.isReady){
 		speed = 50;
 		esc.speed(speed);
-	}
+	}*/
   });
 });
+
+// send command to arduino
+setInterval(function(){
+	if( board.isReady){
+		servo.to(steer);
+		esc.speed(speed);
+		IsBrake = 0; // reset to 0 every cycle
+		//console.log('speed:',speed,' steer:',steer);
+	}
+},50);

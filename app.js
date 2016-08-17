@@ -5,7 +5,7 @@ var app = require('http').createServer(handler)
   , five = require("johnny-five"),
   board,servo,led,sensor;
 
-var Raspi = requirte("respi-io");
+var Raspi = require("raspi-io");
 
   // make web server listen on port 1337
 app.listen(1337);
